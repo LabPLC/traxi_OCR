@@ -80,10 +80,14 @@ class TesseractOCR
         $this->generateConfigFile();
         $this->execute();
         $recognizedText = $this->readOutputFile();
-        $this->removeTempFiles();
+        //$this->removeTempFiles();
+    if (strlen(str_replace(' ', '',$recognizedText))==6){
         return $recognizedText;
+	}else{
+        	return "falla";
+}	
+	 
     }
-
     /**
      * Defines the language to be used during the recognition
      *
@@ -186,7 +190,7 @@ class TesseractOCR
      */
     protected function buildTesseractCommand()
     {
-        $command = "tesseract {$this->image}";
+        $command = "TESSDATA_PREFIX=/usr/share/tesseract tesseract {$this->image}";
 
         if ($this->language) {
             $command.= " -l {$this->language}";
@@ -197,6 +201,7 @@ class TesseractOCR
         if ($this->configFile) {
             $command.= " nobatch {$this->configFile}";
         }
+	$command.= " 2>/tmp/error"; 
 
         return $command;
     }
